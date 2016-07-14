@@ -53,6 +53,16 @@ truncated_decode_test() ->
     ?assert(b64fast:decode64(<< "="    >>) =:= <<       >>),
     ?assert(b64fast:decode64(<<        >>) =:= <<       >>).
 
+backtoback_encode_test() ->
+    Data = binary:copy(<<"0123456789">>, 100000), % 1 MiB of data
+    ?assert(base64:encode(Data) =:= b64fast:encode64(Data)).
+
+backtoback_decode_test() ->
+    Data = binary:copy(<<"0123456789">>, 100000), % 1 MiB of data
+%    Enc = b64fast:encode64(Data),
+    Enc = base64:encode(Data),
+    ?assert(base64:decode(Enc) =:= b64fast:decode64(Enc)).
+
 speed_test() ->
     Data = binary:copy(<<"0123456789">>, 100000), % 1 MiB of data
 
@@ -60,7 +70,7 @@ speed_test() ->
     io:fwrite(standard_error, "erlang encode ~B us ~f MiB/s~n",
       [Elapsed1, byte_size(Data) / Elapsed1]),
 
-    {Elapsed2, Dec1} = timer:tc(base64, decode, [Enc1]),
+    {Elapsed2, _Dec1} = timer:tc(base64, decode, [Enc1]),
     io:fwrite(standard_error, "erlang decode ~B us ~f MiB/s~n",
       [Elapsed2, byte_size(Enc1) / Elapsed2]),
 
@@ -68,6 +78,28 @@ speed_test() ->
     io:fwrite(standard_error, "NIF encode ~B us ~f MiB/s~n",
       [Elapsed3, byte_size(Data) / Elapsed3]),
 
-    {Elapsed4, Dec2} = timer:tc(b64fast, decode64, [Enc2]),
+    {Elapsed4, _Dec2} = timer:tc(b64fast, decode64, [Enc2]),
+    io:fwrite(standard_error, "NIF decode ~B us ~f MiB/s~n",
+      [Elapsed4, byte_size(Enc2) / Elapsed4]).
+
+speed10_test() ->
+    Data = binary:copy(<<"0123456789">>, 1000000), % 10 MiB of data
+
+    {Elapsed3, Enc2} = timer:tc(b64fast, encode64, [Data]),
+    io:fwrite(standard_error, "NIF encode ~B us ~f MiB/s~n",
+      [Elapsed3, byte_size(Data) / Elapsed3]),
+
+    {Elapsed4, _Dec2} = timer:tc(b64fast, decode64, [Enc2]),
+    io:fwrite(standard_error, "NIF decode ~B us ~f MiB/s~n",
+      [Elapsed4, byte_size(Enc2) / Elapsed4]).
+
+speed100_test() ->
+    Data = binary:copy(<<"0123456789">>, 10000000), % 100 MiB of data
+
+    {Elapsed3, Enc2} = timer:tc(b64fast, encode64, [Data]),
+    io:fwrite(standard_error, "NIF encode ~B us ~f MiB/s~n",
+      [Elapsed3, byte_size(Data) / Elapsed3]),
+
+    {Elapsed4, _Dec2} = timer:tc(b64fast, decode64, [Enc2]),
     io:fwrite(standard_error, "NIF decode ~B us ~f MiB/s~n",
       [Elapsed4, byte_size(Enc2) / Elapsed4]).

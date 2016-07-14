@@ -5,20 +5,20 @@
 % The name of the application we're writing. This is the name
 % used for the Erlang .app file.
 
--define(APPNAME, b64fast).
+-define(APPNAME, ?MODULE).
 
 % The name of the shared library we're going to load the NIF
 % code from. Defined in rebar.config as so_name.
 
--define(LIBNAME, b64fast).
+-define(LIBNAME, ?MODULE).
 
 % We could fall back to pure Erlang Base64 functions here.
 % Don't hide platform load errors for now, though.
 
-encode64(_) ->
+encode64(Bin) when is_binary(Bin) ->
     not_loaded(?LINE).
 
-decode64(_) ->
+decode64(Bin) when is_binary(Bin) ->
     not_loaded(?LINE).
 
 % Since we used init/0 in our -on_load() preprocessor directive, this
@@ -45,4 +45,4 @@ init() ->
 % unless there was an unexpected error loading the NIF shared library.
 
 not_loaded(Line) ->
-    exit({not_loaded, [{module, ?MODULE}, {line, Line}]}).
+    erlang:nif_error({not_loaded, [{module, ?MODULE}, {line, Line}]}).
