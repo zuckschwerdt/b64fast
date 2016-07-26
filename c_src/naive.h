@@ -154,7 +154,7 @@ unbase64(const unsigned char* ascii, unsigned int len, unsigned char *bin, unsig
         *bin++ = (C<<6) | (D);
     }
 
-    if (pad == 1 || charNo <= len - 3)  // single padding or truncated
+    if (pad <= 1 && charNo <= len - 3)  // single padding or truncated and at least 3 chars left
     {
         int A = base64_table_dec[ascii[charNo]];
         int B = base64_table_dec[ascii[charNo+1]];
@@ -163,7 +163,7 @@ unbase64(const unsigned char* ascii, unsigned int len, unsigned char *bin, unsig
         *bin++ = (A<<2) | (B>>4);
         *bin++ = (B<<4) | (C>>2);
     }
-    else if (pad == 2 || charNo <= len - 2)  // double padding or truncated
+    else if (charNo <= len - 2)  // double padding or truncated and at least 2 chars left
     {
         int A = base64_table_dec[ascii[charNo]];
         int B = base64_table_dec[ascii[charNo+1]];

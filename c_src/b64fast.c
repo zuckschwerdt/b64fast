@@ -200,7 +200,7 @@ nifload(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info)
                                          NULL,
                                          ERL_NIF_RT_CREATE|ERL_NIF_RT_TAKEOVER,
                                          NULL);
-    return 0;
+    return *priv_data == NULL;
 }
 
 static int
@@ -212,7 +212,7 @@ nifupgrade(ErlNifEnv* env, void** priv_data, void** old_priv_data, ERL_NIF_TERM 
                                          NULL,
                                          ERL_NIF_RT_TAKEOVER,
                                          NULL);
-    return 0;
+    return *priv_data == NULL;
 }
 
 static ErlNifFunc funcs[] = {
