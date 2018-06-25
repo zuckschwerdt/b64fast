@@ -4,3 +4,6 @@
 
 .eunit/
 ebin/
+_build/
+c_src/b64fast.d
+rebar.lock
