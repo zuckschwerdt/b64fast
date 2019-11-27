@@ -1,8 +1,11 @@
 {application, b64fast, [
-    {description, "Fast Base64 as NIF"},
-    {vsn, "0.2.1"},
+    {description, "This NIF complements Erlang with a fast and optimized way of encoding and decoding bulk Base64 data. Compliant with RFC4648 - The Base16, Base32, and Base64 Data Encodings."},
+    {vsn, "0.2.2"},
     {modules, []},
     {registered, []},
     {applications, [kernel, stdlib]},
-    {env, []}
+    {env, []},
+    {licenses, ["MIT"]},
+    {links, [{"GitHub", "https://github.com/zuckschwerdt/b64fast"}]},
+    {files, ["src", "c_src/*.[ch]", "test", "rebar.config", "README.md", "LICENSE"]}
 ]}.
