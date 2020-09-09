@@ -1,6 +1,6 @@
 {application, b64fast, [
     {description, "This NIF complements Erlang with a fast and optimized way of encoding and decoding bulk Base64 data. Compliant with RFC4648 - The Base16, Base32, and Base64 Data Encodings."},
-    {vsn, "0.2.2"},
+    {vsn, "0.2.3"},
     {modules, []},
     {registered, []},
     {applications, [kernel, stdlib]},
