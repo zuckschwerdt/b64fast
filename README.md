@@ -17,7 +17,7 @@ Please note that the decoding doesn't handle whitespace, yet.
 
 Use an erl shell to quickly measure Base64 speed in native Erlang.
 
-```
+```erlang
 Data = binary:copy(<<"0123456789">>, 100000). % Create 1 MiB of data
 
 {Elapsed, Enc} = timer:tc(base64, encode, [Data]).
@@ -29,7 +29,7 @@ Throughput_Decode = byte_size(Enc) / Elapsed2. % Throughput in MiB/s
 
 And now try the (naive) NIF variant.
 
-```
+```erlang
 Data = binary:copy(<<"0123456789">>, 1000000). % 10 MiB of data
 
 {Elapsed, Enc} = timer:tc(b64fast, encode64, [Data]).
