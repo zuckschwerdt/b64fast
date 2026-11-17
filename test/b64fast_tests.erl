@@ -40,6 +40,9 @@ decode_test() ->
 %    ?assert(b64fast:decode64(<< "==  "  >>) =:= <<       >>).
 
 truncated_decode_test() ->
+    ?assert(b64fast:decode64(<< "AAAAA" >>) =:= << 0,0,0 >>),
+    ?assert(b64fast:decode64(<< "AAAA=" >>) =:= << 0,0,0 >>),
+    ?assert(b64fast:decode64(<< "AAA==" >>) =:= << 0,0   >>),
     ?assert(b64fast:decode64(<< "AAAA" >>) =:= << 0,0,0 >>),
     ?assert(b64fast:decode64(<< "AAA=" >>) =:= << 0,0   >>),
     ?assert(b64fast:decode64(<< "AAA"  >>) =:= << 0,0   >>),

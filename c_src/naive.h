@@ -104,13 +104,14 @@ unbase64_size(const unsigned char* ascii, unsigned int len)
     }
     if (ascii[len - 1] == '=') ++pad;
     if (ascii[len - 2] == '=') ++pad;
+    len -= pad; // remove allowed 1 or 2 compliant padding chars
 
-    if (len - pad < 2) // truncated, less than a byte
+    if (len < 2) // truncated, less than a byte
     {
         return 0;
     }
 
-    return (3 * len / 4 - pad);
+    return (3 * len / 4);
 }
 
 static unsigned int
@@ -129,20 +130,21 @@ unbase64(const unsigned char* ascii, unsigned int len, unsigned char *bin, unsig
     }
     if (ascii[len - 1] == '=') ++pad;
     if (ascii[len - 2] == '=') ++pad;
+    len -= pad; // remove allowed 1 or 2 compliant padding chars
 
-    if (len - pad < 2) // truncated, less than a byte
+    if (len < 2) // truncated, less than a byte
     {
         return 0;
     }
 
-    unsigned int outlen = 3 * len / 4 - pad;
+    unsigned int outlen = 3 * len / 4;
     if (bin_size < outlen)
     {
         return 0;
     }
 
     int charNo;
-    for (charNo = 0; len >= 4 + pad && charNo <= len - 4 - pad; charNo += 4)
+    for (charNo = 0; charNo + 4 <= len; charNo += 4)
     {
         int A = base64_table_dec[ascii[charNo]];
         int B = base64_table_dec[ascii[charNo+1]];
@@ -154,7 +156,7 @@ unbase64(const unsigned char* ascii, unsigned int len, unsigned char *bin, unsig
         *bin++ = (C<<6) | (D);
     }
 
-    if (pad <= 1 && charNo <= len - 3)  // single padding or truncated and at least 3 chars left
+    if (charNo + 3 <= len) // single padding or truncated and at least 3 chars left
     {
         int A = base64_table_dec[ascii[charNo]];
         int B = base64_table_dec[ascii[charNo+1]];
@@ -163,7 +165,7 @@ unbase64(const unsigned char* ascii, unsigned int len, unsigned char *bin, unsig
         *bin++ = (A<<2) | (B>>4);
         *bin++ = (B<<4) | (C>>2);
     }
-    else if (charNo <= len - 2)  // double padding or truncated and at least 2 chars left
+    else if (charNo + 2 <= len) // double padding or truncated and at least 2 chars left
     {
         int A = base64_table_dec[ascii[charNo]];
         int B = base64_table_dec[ascii[charNo+1]];
